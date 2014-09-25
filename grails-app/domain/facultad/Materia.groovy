@@ -5,9 +5,9 @@ class Materia {
 	String nombre
 	int codigo
 
-	Profesor profesor
+	Profesor dictadaPor
 
     static constraints = {
-		profesor nullable: false
+		dictadaPor nullable: false
     }
 }

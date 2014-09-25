@@ -4,12 +4,12 @@ class Alumno {
 
 	String nombre
 	String apellido
-	
-	int edad
 
-	String padron
+	int edad = 20
+	String padron = "1000"
+	String sexo = "masculino"
 
-	String sexo
+	long saldo = 0
 
     static constraints = {
 		nombre blank: false, nullable: false
@@ -21,4 +21,9 @@ class Alumno {
 
 		sexo inList: ["masculino", "femenino"]
     }
+    
+    Alumno(def cmd) {
+		this.nombre = cmd.nombre
+		this.apellido = cmd.apellido
+	}
 }

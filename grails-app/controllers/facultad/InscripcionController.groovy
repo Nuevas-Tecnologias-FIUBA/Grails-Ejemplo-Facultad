@@ -1,28 +1,98 @@
 package facultad
 
+class AltaAlumnoCommand {
+	String nombre
+	String apellido
+
+    static constraints = {
+		nombre blank: false, nullable: false
+		apellido blank: false, nullable: false
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class AltaMateriaCommand {
+	String nombre
+	Integer codigo
+	Integer dictadaPor
+
+	static constraints = {
+		nombre nullable: false
+		codigo nullable: false
+		dictadaPor nullable: false
+	}
+}
+
+
+
 class InscripcionController {
 
 	def index() {
 	}
 
-	def grabar() {
-		String nombre = params.nombre
-		String apellido = params.apellido
+	def relacion() {
+		
+		def profesores = Profesor.withCriteria {
+			or {
+				eq('nombre', 'pablo')
+				eq('nombre', 'saladino')
+			}
 
-		if (!nombre || !apellido) {
-			render view: "index", model: [error: 1, nombre: nombre, apellido: apellido]
-			return
+			ne('apellido', 'perez')
 		}
+		
+		[profesores: profesores]
+	}
 
-		Alumno nuevo = new Alumno(
-			nombre: nombre,
-			apellido: apellido,
-			edad: 20,
-			padron: "10000",
-			sexo: "femenino"
-		)
-		nuevo.save(failOnError: true)
-		redirect action: "ver", id: nuevo.id
+	def altaMateria(AltaMateriaCommand command) {
+		if (!command.hasErrors()) {
+			Profesor dictadaPor = Profesor.get(command.dictadaPor)
+			if (!dictadaPor) throw new RuntimeException("no existe")
+
+			Materia m = new Materia(
+				nombre: command.nombre,
+				codigo: command.codigo,
+				dictadaPor: dictadaPor
+			)
+			m.save(failOnError: true)
+
+			
+			render "listo"
+		} else {
+			render "error"
+		}
+	}
+
+	def grabar(AltaAlumnoCommand alumno) {
+		if (!alumno.hasErrors()) {
+			Alumno otro = new Alumno(alumno)
+			otro.save(failOnError: true)
+
+			redirect action: "ver", id: otro.id
+		} else {
+			render view: "index", model: [
+				error: 1,
+				alumno: alumno,
+			]
+		}
 	}
 
 	def ver(Long id) {

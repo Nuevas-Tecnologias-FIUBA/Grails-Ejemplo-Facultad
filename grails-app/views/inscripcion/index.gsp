@@ -6,19 +6,20 @@
 	</head>
 	<body>
 		<g:if test="${error}">
-			<span style="color: red;">hubo "errores"</span>
-			<g:if test="${!nombre}">
-				nombre mal
-			</g:if>
-			<g:if test="${!apellido}">
-				apellido mal
-			</g:if>
+			<g:hasErrors bean="${alumno}">
+				<ul class="errors" role="alert">
+					<g:eachError bean="${alumno}" var="error">
+						<li <g:if test="${error in org.springframework.validation.FieldError}">data-field-id="${error.field}"</g:if>><g:message error="${error}"/></li>
+					</g:eachError>
+				</ul>
+			</g:hasErrors>
+
 		</g:if>
 		
 		<g:form controller="inscripcion" action="grabar">
-			nombre: <input type="text" name="nombre" value="${nombre}" />
+			nombre: <input type="text" name="nombre" value="${alumno?.nombre}" />
 			<br/>
-			apellido: <input type="text" name="apellido" value="${apellido}" />
+			apellido: <input type="text" name="apellido" value="${alumno?.apellido}" />
 			
 			<br/>
 
